@@ -27,10 +27,13 @@ export default function ProductFilters() {
   const minPriceInput = useCurrencyInput({ initialValue: contextMinPrice || 0 });
   const maxPriceInput = useCurrencyInput({ initialValue: contextMaxPrice || 0 });
   const [sortOption, setSortOptionState] = useState<SortOption>(contextSortOption);
-  const [isCollapsed, setIsCollapsed] = useState(window.innerWidth < 768);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   
-  // Detectar mudanças no tamanho da tela
+  // Verificar tamanho da tela apenas no lado do cliente
   useEffect(() => {
+    // Inicializar o estado de collapse baseado no tamanho da tela
+    setIsCollapsed(window.innerWidth < 768);
+    
     const handleResize = () => {
       setIsCollapsed(window.innerWidth < 768);
     };
@@ -50,7 +53,7 @@ export default function ProductFilters() {
     if (contextMaxPrice) {
       maxPriceInput.setValue(contextMaxPrice);
     }
-  }, [contextMinPrice, contextMaxPrice]);
+  }, [contextMinPrice, contextMaxPrice, minPriceInput, maxPriceInput]);
   
   // Aplicar filtros com debounce
   const applyFilters = useCallback(() => {

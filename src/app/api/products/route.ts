@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { Product, ProductFormData } from '@/app/types/product';
 import { mockProductList } from '@/lib/mocks/mockData';
 
-let mockProducts: Product[] = [...mockProductList];
+const mockProducts: Product[] = [...mockProductList];
 
 export async function GET() {
   // Simulando um atraso de rede
