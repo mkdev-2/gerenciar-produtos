@@ -1,14 +1,8 @@
 'use client';
 
-import ProductForm from './ProductForm';
-import { useState } from 'react';
+import ProductFormButton from './ProductFormButton';
 
 export default function Header() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleOpenModal = () => setIsModalOpen(true);
-  const handleCloseModal = () => setIsModalOpen(false);
-
   return (
     <header className="bg-white border-b py-4">
       <div className="container mx-auto px-4 flex justify-between items-center">
@@ -30,21 +24,8 @@ export default function Header() {
           <h1 className="text-xl font-bold">Catálogo de Produtos</h1>
         </div>
         
-        <button
-          onClick={handleOpenModal}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-        >
-          Cadastrar Novo Produto
-        </button>
+        <ProductFormButton />
       </div>
-      
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg w-full max-w-md p-6">
-            <ProductForm onClose={handleCloseModal} />
-          </div>
-        </div>
-      )}
     </header>
   );
 } 

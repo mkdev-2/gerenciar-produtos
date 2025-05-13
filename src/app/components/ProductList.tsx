@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
 import { useProducts } from '../context/ProductContext';
 import ProductCard from './ProductCard';
-import ProductForm from './ProductForm';
+import ProductFormButton from './ProductFormButton';
 
 export default function ProductList() {
   const { 
@@ -16,19 +15,9 @@ export default function ProductList() {
     setCurrentPage
   } = useProducts();
   
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentProducts = filteredProducts.slice(startIndex, endIndex);
-  
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-  
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
   
   if (loading) {
     return (
@@ -50,20 +39,7 @@ export default function ProductList() {
     return (
       <div className="text-center py-10">
         <p className="text-gray-500 mb-4">Nenhum produto encontrado com os filtros atuais.</p>
-        <button
-          onClick={handleOpenModal}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-        >
-          Adicionar Novo Produto
-        </button>
-        
-        {isModalOpen && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-lg w-full max-w-md p-6">
-              <ProductForm onClose={handleCloseModal} />
-            </div>
-          </div>
-        )}
+        <ProductFormButton />
       </div>
     );
   }
@@ -104,14 +80,6 @@ export default function ProductList() {
           >
             Próxima
           </button>
-        </div>
-      )}
-      
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg w-full max-w-md p-6">
-            <ProductForm onClose={handleCloseModal} />
-          </div>
         </div>
       )}
     </div>
