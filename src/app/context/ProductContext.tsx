@@ -55,6 +55,11 @@ export function ProductProvider({ children }: ProductProviderProps) {
   useEffect(() => {
     setCurrentPage(1);
   }, [itemsPerPage]);
+  
+  // Resetar para a página 1 quando os filtros mudam
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [nameFilter, minPrice, maxPrice, sortOption]);
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
