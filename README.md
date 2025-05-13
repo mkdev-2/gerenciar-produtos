@@ -33,6 +33,64 @@ npm run dev
 
 Acesse [http://localhost:3000](http://localhost:3000) no seu navegador.
 
+## Decisões Técnicas
+
+Este projeto foi construído seguindo princípios de código limpo, modularidade e performance. Abaixo estão as principais decisões técnicas e o raciocínio por trás delas:
+
+### Arquitetura de Componentes
+
+1. **Componentes Especializados**: Cada componente foi criado com uma responsabilidade única e bem definida, seguindo o princípio da responsabilidade única (SRP do SOLID).
+
+2. **Context API para Gerenciamento de Estado**: Optamos pelo Context API em vez de bibliotecas como Redux, pois o escopo da aplicação é moderado e a complexidade adicional de uma biblioteca de estado não se justificava.
+
+3. **Hooks Personalizados**: Desenvolvemos hooks como `useCurrencyInput` e `useForm` para encapsular lógicas complexas e reutilizáveis, evitando duplicação de código e facilitando os testes.
+
+### Performance e Experiência do Usuário
+
+1. **Preloader Inteligente**: O preloader foi implementado para detectar o carregamento de todas as imagens antes de remover-se da tela, garantindo que o usuário não veja elementos visuais incompletos.
+
+2. **Debounce nos Filtros**: Implementamos debounce nas operações de filtro para evitar múltiplas renderizações durante a digitação do usuário, melhorando a performance.
+
+3. **Formatação de Moeda Otimizada**: A lógica de formatação de moeda foi isolada para evitar cálculos desnecessários e garantir consistência em toda a aplicação.
+
+### Abordagem de Testes
+
+1. **Priorização de Testes de Comportamento**: Focamos em testar como os componentes se comportam do ponto de vista do usuário, não seus detalhes de implementação.
+
+2. **Mock de Serviços Externos**: Utilizamos MSW para simular a API, permitindo testes consistentes independentes do backend.
+
+3. **Cobertura de Diferentes Estados da UI**: Testamos múltiplos estados dos componentes (carregando, erro, vazio, com dados), garantindo robustez em diferentes cenários.
+
+## Evoluções Futuras
+
+A aplicação tem potencial para várias melhorias e expansões:
+
+### Funcionalidades
+
+1. **Sistema de Autenticação**: Implementar login/cadastro para permitir gerenciamento personalizado por usuário.
+
+2. **Histórico de Alterações**: Adicionar rastreamento de alterações nos produtos com timestamps e informações do autor.
+
+3. **Exportação de Dados**: Permitir exportação do catálogo em formatos como CSV, PDF ou Excel.
+
+4. **Imagens Múltiplas**: Suporte para múltiplas imagens por produto com visualização em galeria.
+
+5. **Categorias Customizáveis**: Sistema para adicionar, editar e remover categorias de produtos.
+
+### Técnicas
+
+1. **Implementação de PWA**: Transformar a aplicação em uma Progressive Web App para permitir uso offline e instalação.
+
+2. **Testes E2E**: Adicionar testes end-to-end com Cypress ou Playwright para validar fluxos completos de usuário.
+
+3. **Otimização de Imagens Avançada**: Implementar carregamento lazy e otimização automática de imagens enviadas pelos usuários.
+
+4. **Internacionalização (i18n)**: Preparar a aplicação para suportar múltiplos idiomas.
+
+5. **Métricas de Performance**: Integrar ferramentas como Lighthouse CI para monitorar constantemente a performance da aplicação.
+
+6. **GraphQL**: Migrar a API REST para GraphQL para consultas mais eficientes e flexíveis.
+
 ## Testes
 
 A aplicação possui testes automatizados para garantir o funcionamento correto dos componentes e da lógica de negócio.
