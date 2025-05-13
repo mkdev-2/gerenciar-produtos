@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, ReactNode, useCallback, useMemo, useEffect } from 'react';
 import { Product, ProductFormData } from '../types/product';
 import { productApi } from '../services/productApi';
+import { useResponsiveItemsPerPage } from '../hooks/useResponsiveItemsPerPage';
 
 // Tipos
 export type SortOption = 'name-asc' | 'name-desc' | 'price-asc' | 'price-desc' | 'recent';
@@ -46,7 +47,14 @@ export function ProductProvider({ children }: ProductProviderProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(8);
+  
+  // Use o hook personalizado para ajustar o número de itens por página responsivamente
+  const itemsPerPage = useResponsiveItemsPerPage();
+  
+  // Reseta para a primeira página quando o número de itens por página muda
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [itemsPerPage]);
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);

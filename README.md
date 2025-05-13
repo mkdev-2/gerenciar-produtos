@@ -13,13 +13,17 @@ Teste através do link: https://gerenciar-produtos.vercel.app/
   - Ordenação por relevância, preço e nome
 - **Cadastro de produtos** com modal intuitivo
 - **Formatação monetária brasileira** (R$) com separação de milhares e decimais
+- **Paginação adaptativa** que ajusta a quantidade de produtos por página conforme o tamanho da tela
+- **Interface totalmente responsiva** otimizada para dispositivos móveis, tablets e desktops
 
 ## Experiência do Usuário
 
 - Interface limpa e responsiva
 - Filtros com aplicação automática (sem necessidade de botões adicionais)
-- Debounce para melhorar performance durante digitação nos filtros
-- Máscaras de entrada para valores monetários
+- Filtros recolhíveis para melhor visualização em dispositivos móveis
+- Máscaras de entrada para valores monetários com suporte completo a zeros (10, 20, 30, etc.)
+- Layout adaptativo que prioriza legibilidade em qualquer dispositivo
+- Prevenção de zoom indesejado em campos de entrada em dispositivos móveis
 
 ## Como executar
 
@@ -43,15 +47,19 @@ Este projeto foi construído seguindo princípios de código limpo, modularidade
 
 2. **Context API para Gerenciamento de Estado**: Optamos pelo Context API em vez de bibliotecas como Redux, pois o escopo da aplicação é moderado e a complexidade adicional de uma biblioteca de estado não se justificava.
 
-3. **Hooks Personalizados**: Desenvolvemos hooks como `useCurrencyInput` e `useForm` para encapsular lógicas complexas e reutilizáveis, evitando duplicação de código e facilitando os testes.
+3. **Hooks Personalizados**: Desenvolvemos hooks como `useCurrencyInput` e `useResponsiveItemsPerPage` para encapsular lógicas complexas e reutilizáveis, evitando duplicação de código e facilitando os testes.
 
 ### Performance e Experiência do Usuário
 
 1. **Preloader Inteligente**: O preloader foi implementado para detectar o carregamento de todas as imagens antes de remover-se da tela, garantindo que o usuário não veja elementos visuais incompletos.
 
-2. **Debounce nos Filtros**: Implementamos debounce nas operações de filtro para evitar múltiplas renderizações durante a digitação do usuário, melhorando a performance.
+2. **Atualização Instantânea**: As operações de filtro atualizam os resultados imediatamente, sem necessidade de botões de confirmação, proporcionando uma experiência fluida.
 
-3. **Formatação de Moeda Otimizada**: A lógica de formatação de moeda foi isolada para evitar cálculos desnecessários e garantir consistência em toda a aplicação.
+3. **Formatação de Moeda Otimizada**: A lógica de formatação de moeda foi isolada para evitar cálculos desnecessários e garantir consistência em toda a aplicação, com tratamento especial para valores que contêm zeros (10,00, 30,50, etc).
+
+4. **Paginação Responsiva**: Quantidade de itens por página se adapta automaticamente ao dispositivo (4 em celulares, 6 em tablets, 8 em desktops), melhorando a experiência e performance.
+
+5. **Otimização para Dispositivos Móveis**: Utilizamos técnicas específicas para evitar comportamentos indesejados em dispositivos móveis, como zoom automático em campos de entrada e ajustes de layout para melhor visualização.
 
 ### Abordagem de Testes
 
@@ -76,6 +84,8 @@ A aplicação tem potencial para várias melhorias e expansões:
 4. **Imagens Múltiplas**: Suporte para múltiplas imagens por produto com visualização em galeria.
 
 5. **Categorias Customizáveis**: Sistema para adicionar, editar e remover categorias de produtos.
+
+6. **Modo Offline**: Adicionar capacidade de trabalhar offline com sincronização posterior.
 
 ### Técnicas
 
@@ -105,7 +115,7 @@ A aplicação possui testes automatizados para garantir o funcionamento correto 
 
 - **ProductList** - Testa a renderização da lista de produtos em diferentes estados (carregando, com dados, vazia, erro)
 - **ProductForm** - Testa a abertura do modal, fechamento e estados de submissão do formulário
-- **ProductFilters** - Testa a funcionalidade dos filtros, incluindo debounce e ordenação
+- **ProductFilters** - Testa a funcionalidade dos filtros e ordenação
 - **ProductContext** - Testa a lógica de gerenciamento de estado global da aplicação
 
 ### Como executar os testes
@@ -125,7 +135,7 @@ npm test -- --coverage
 
 - Isolamento de dependências externas através de mocks
 - Testes que priorizam comportamento em vez de implementação
-- Uso de hooks personalizados para lógica reutilizável (useCurrencyInput, useForm)
+- Uso de hooks personalizados para lógica reutilizável (useCurrencyInput, useResponsiveItemsPerPage)
 - Testes de interação do usuário (cliques, digitação, etc.)
 
 ## Estrutura do Projeto

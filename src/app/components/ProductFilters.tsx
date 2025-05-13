@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useProducts, SortOption } from '../context/ProductContext';
-import { useCurrencyInput } from '../hooks/useCurrencyInput';
+import CurrencyInput, { CurrencyInputRef } from './CurrencyInput';
 
 const sortOptions = [
   { value: 'recent', label: 'Mais recentes' },
@@ -24,8 +24,10 @@ export default function ProductFilters() {
   } = useProducts();
   
   const [nameInput, setNameInput] = useState(nameFilter || '');
-  const minPriceInput = useCurrencyInput({ initialValue: contextMinPrice || 0 });
-  const maxPriceInput = useCurrencyInput({ initialValue: contextMaxPrice || 0 });
+  const minPriceRef = useRef<CurrencyInputRef>(null);
+  const maxPriceRef = useRef<CurrencyInputRef>(null);
+  const [minPriceValue, setMinPriceValue] = useState<number>(0);
+  const [maxPriceValue, setMaxPriceValue] = useState<number>(0);
   const [sortOption, setSortOptionState] = useState<SortOption>(contextSortOption);
   const [isCollapsed, setIsCollapsed] = useState(false);
   
@@ -46,39 +48,51 @@ export default function ProductFilters() {
   
   // Inicializar os estados com valores do contexto quando o componente montar
   useEffect(() => {
-    if (contextMinPrice) {
-      minPriceInput.setValue(contextMinPrice);
+    if (contextMinPrice && minPriceRef.current) {
+      minPriceRef.current.setValue(contextMinPrice);
+      setMinPriceValue(contextMinPrice);
     }
     
-    if (contextMaxPrice) {
-      maxPriceInput.setValue(contextMaxPrice);
+    if (contextMaxPrice && maxPriceRef.current) {
+      maxPriceRef.current.setValue(contextMaxPrice);
+      setMaxPriceValue(contextMaxPrice);
     }
-  }, [contextMinPrice, contextMaxPrice, minPriceInput, maxPriceInput]);
+  }, [contextMinPrice, contextMaxPrice]);
   
-  // Aplicar filtros com debounce
   const applyFilters = useCallback(() => {
     setNameFilter(nameInput);
-    const minPriceValue = minPriceInput.numericValue > 0 ? minPriceInput.numericValue : null;
-    const maxPriceValue = maxPriceInput.numericValue > 0 ? maxPriceInput.numericValue : null;
-    setPriceRange(minPriceValue, maxPriceValue);
-  }, [nameInput, minPriceInput.numericValue, maxPriceInput.numericValue, setNameFilter, setPriceRange]);
-  
-  // Usar um efeito para aplicar os filtros automaticamente com um pequeno delay
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      applyFilters();
-    }, 500); 
     
-    return () => clearTimeout(timer);
-  }, [nameInput, minPriceInput.formattedValue, maxPriceInput.formattedValue, applyFilters]);
+    setPriceRange(
+      minPriceValue > 0 ? minPriceValue : null,
+      maxPriceValue > 0 ? maxPriceValue : null
+    );
+  }, [nameInput, minPriceValue, maxPriceValue, setNameFilter, setPriceRange]);
+  
+  // Aplicar filtros imediatamente quando os valores mudarem
+  useEffect(() => {
+    applyFilters();
+  }, [nameInput, minPriceValue, maxPriceValue, applyFilters]);
+  
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNameInput(e.target.value);
+  };
+  
+  const handleMinPriceChange = (value: number) => {
+    setMinPriceValue(value);
+  };
+
+  const handleMaxPriceChange = (value: number) => {
+    setMaxPriceValue(value);
+  };
   
   const handleClearFilters = () => {
     setNameInput('');
-    minPriceInput.setValue(0);
-    maxPriceInput.setValue(0);
+    if (minPriceRef.current) minPriceRef.current.setValue(0);
+    if (maxPriceRef.current) maxPriceRef.current.setValue(0);
+    setMinPriceValue(0);
+    setMaxPriceValue(0);
     setSortOptionState('recent');
     
-    // Aplicar limpeza imediatamente
     setNameFilter('');
     setPriceRange(null, null);
     setSortOption('recent');
@@ -87,7 +101,6 @@ export default function ProductFilters() {
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value as SortOption;
     setSortOptionState(value);
-    // Aplicar ordenação imediatamente
     setSortOption(value);
   };
   
@@ -96,12 +109,12 @@ export default function ProductFilters() {
   };
   
   return (
-    <div className="mb-8 border rounded-lg bg-white overflow-hidden">
+    <div className="mb-4 sm:mb-6 border rounded-lg bg-white overflow-hidden shadow-sm">
       <div 
-        className="p-4 flex justify-between items-center cursor-pointer border-b" 
+        className="p-3 sm:p-4 flex justify-between items-center cursor-pointer border-b"
         onClick={toggleCollapse}
       >
-        <h2 className="text-xl font-semibold">Filtros</h2>
+        <h2 className="text-lg sm:text-xl font-semibold">Filtros</h2>
         <button 
           className="text-gray-500 hover:text-gray-700 focus:outline-none"
           aria-label={isCollapsed ? "Expandir filtros" : "Recolher filtros"}
@@ -117,7 +130,7 @@ export default function ProductFilters() {
         </button>
       </div>
       
-      <div className={`transition-all duration-300 ease-in-out ${isCollapsed ? 'max-h-0 opacity-0 overflow-hidden' : 'max-h-[1000px] opacity-100 p-5'}`}>
+      <div className={`transition-all duration-300 ease-in-out ${isCollapsed ? 'max-h-0 opacity-0 overflow-hidden' : 'max-h-[1000px] opacity-100 p-3 sm:p-5'}`}>
         <div className="mb-4">
           <label htmlFor="search" className="block text-sm font-medium mb-1">
             Buscar produtos
@@ -127,53 +140,37 @@ export default function ProductFilters() {
               id="search"
               type="text"
               value={nameInput}
-              onChange={(e) => setNameInput(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border rounded-md"
+              onChange={handleNameChange}
+              className="w-full pl-10 pr-4 py-2 border rounded-md text-sm sm:text-base"
               placeholder="Nome ou descrição do produto"
             />
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+              <svg className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
               </svg>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label htmlFor="min-price" className="block text-sm font-medium mb-1">
-              Preço mínimo
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <span className="text-gray-500">R$</span>
-              </div>
-              <input
+        <div className="grid grid-cols-1 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-3 sm:gap-4">
+            <div>
+              <CurrencyInput 
+                ref={minPriceRef}
                 id="min-price"
-                type="text"
-                value={minPriceInput.formattedValue}
-                onChange={minPriceInput.handleChange}
-                className="w-full pl-8 pr-3 py-2 border rounded-md"
-                placeholder="0,00"
+                label="Preço mínimo"
+                initialValue={contextMinPrice || 0}
+                onChange={handleMinPriceChange}
               />
             </div>
-          </div>
-          
-          <div>
-            <label htmlFor="max-price" className="block text-sm font-medium mb-1">
-              Preço máximo
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <span className="text-gray-500">R$</span>
-              </div>
-              <input
+            
+            <div>
+              <CurrencyInput 
+                ref={maxPriceRef}
                 id="max-price"
-                type="text"
-                value={maxPriceInput.formattedValue}
-                onChange={maxPriceInput.handleChange}
-                className="w-full pl-8 pr-3 py-2 border rounded-md"
-                placeholder="0,00"
+                label="Preço máximo"
+                initialValue={contextMaxPrice || 0}
+                onChange={handleMaxPriceChange}
               />
             </div>
           </div>
@@ -187,7 +184,7 @@ export default function ProductFilters() {
                 id="sort"
                 value={sortOption}
                 onChange={handleSortChange}
-                className="w-full px-3 py-2 border rounded-md border-gray-300 bg-white appearance-none pr-8"
+                className="w-full px-3 py-2 border rounded-md border-gray-300 bg-white appearance-none pr-8 text-sm sm:text-base"
               >
                 {sortOptions.map(option => (
                   <option key={option.value} value={option.value}>

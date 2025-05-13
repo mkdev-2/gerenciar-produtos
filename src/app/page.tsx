@@ -26,19 +26,19 @@ export default function Home() {
     <ProductProvider>
       <div className="min-h-screen flex flex-col bg-white">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-6">
-          <div className="mb-4">
-            <p className="text-gray-600">Gerencie seu catálogo de produtos com facilidade</p>
+        <main className="flex-1 container mx-auto px-3 sm:px-4 py-4 sm:py-6">
+          <div className="mb-3 sm:mb-4">
+            <p className="text-sm sm:text-base text-gray-600">Gerencie seu catálogo de produtos com facilidade</p>
           </div>
           
-          <hr className="my-6 border-gray-200" />
+          <hr className="my-4 sm:my-6 border-gray-200" />
           
           <ProductFilters />
           <ProductList />
         </main>
         
-        <footer className="bg-white py-6 border-t">
-          <div className="container mx-auto px-4 text-center text-gray-600 text-sm">
+        <footer className="bg-white py-4 sm:py-6 border-t">
+          <div className="container mx-auto px-3 sm:px-4 text-center text-gray-600 text-xs sm:text-sm">
             {new Date().getFullYear()} Catálogo de Produtos
           </div>
         </footer>

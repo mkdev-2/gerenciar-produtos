@@ -5,12 +5,15 @@ import { jsx } from 'react/jsx-runtime';
 
 // Mock do componente ProductForm
 jest.mock('../ProductForm', () => {
-  return jest.fn(() => (
-    <div data-testid="product-form">
-      Formulário de Produto Mockado
-      <button>Fechar</button>
-    </div>
-  ));
+  return {
+    __esModule: true,
+    default: jest.fn(({ onClose }) => (
+      <div data-testid="product-form">
+        Formulário de Produto Mockado
+        <button onClick={onClose}>Fechar</button>
+      </div>
+    ))
+  };
 });
 
 describe('ProductFormButton', () => {
@@ -20,7 +23,7 @@ describe('ProductFormButton', () => {
 
   it('deve renderizar o botão para abrir o modal', () => {
     render(jsx(ProductFormButton, {}));
-    const button = screen.getByText('Cadastrar Novo Produto');
+    const button = screen.getByText('Novo Produto');
     expect(button).toBeInTheDocument();
   });
 
@@ -31,7 +34,7 @@ describe('ProductFormButton', () => {
     expect(screen.queryByTestId('product-form')).not.toBeInTheDocument();
     
     // Clicar no botão para abrir o modal
-    const button = screen.getByText('Cadastrar Novo Produto');
+    const button = screen.getByText('Novo Produto');
     fireEvent.click(button);
     
     // O modal deve estar visível
@@ -42,7 +45,7 @@ describe('ProductFormButton', () => {
     render(jsx(ProductFormButton, {}));
     
     // Abrir o modal
-    const button = screen.getByText('Cadastrar Novo Produto');
+    const button = screen.getByText('Novo Produto');
     fireEvent.click(button);
     
     // O modal deve estar visível

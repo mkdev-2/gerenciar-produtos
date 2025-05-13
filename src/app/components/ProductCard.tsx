@@ -22,12 +22,13 @@ export default function ProductCard({ product }: ProductCardProps) {
       'Consultoria': 'bg-green-100 text-green-800',
       'Suporte': 'bg-yellow-100 text-yellow-800',
       'Design': 'bg-pink-100 text-pink-800',
+      'Marketing': 'bg-orange-100 text-orange-800',
     };
     
     const colorClass = colorMap[category] || 'bg-gray-100 text-gray-800';
     
     return (
-      <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ${colorClass}`}>
+      <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${colorClass}`}>
         {category}
       </span>
     );
@@ -35,7 +36,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <div className="rounded-lg overflow-hidden shadow-md bg-white border border-gray-200 h-full flex flex-col">
-      <div className="relative h-48">
+      <div className="relative h-40 sm:h-48">
         <img
           src={product.imageUrl || '/placeholder-product.jpg'}
           alt={product.name}
@@ -46,18 +47,20 @@ export default function ProductCard({ product }: ProductCardProps) {
         />
       </div>
       
-      <div className="p-4 flex flex-col flex-grow">
-        <div className="mb-2 flex items-start justify-between">
-          <h3 className="text-lg font-semibold text-gray-900 truncate flex-grow">{product.name}</h3>
-          {renderCategoryBadge(product.category)}
+      <div className="p-3 sm:p-4 flex flex-col flex-grow">
+        <div className="mb-1 sm:mb-2 flex items-start justify-between gap-2">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">{product.name}</h3>
+          <div className="flex-shrink-0">
+            {renderCategoryBadge(product.category)}
+          </div>
         </div>
         
-        <p className="text-gray-600 text-sm mb-4 flex-grow">
+        <p className="text-gray-600 text-xs sm:text-sm mb-3 sm:mb-4 flex-grow line-clamp-3">
           {product.description}
         </p>
         
         <div className="mt-auto">
-          <p className="text-xl font-bold text-gray-900">
+          <p className="text-lg sm:text-xl font-bold text-gray-900">
             {formatCurrency(product.price)}
           </p>
         </div>
